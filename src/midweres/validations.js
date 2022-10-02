@@ -15,3 +15,23 @@ export async function validaPostName(req, res, next) {
 const schemaPostName = Joi.object().keys({
   name: Joi.string().min(1).required(),
 });
+
+export async function validatePostGame(req, res, next) {
+  const validation = schemaPostGame.validate(req.body, {
+    abortEarly: true,
+  });
+
+  if (validation.error) {
+    return res.send(validation.error);
+  }
+
+  next();
+}
+
+const schemaPostGame = Joi.object().keys({
+  name: Joi.string().min(1).required(),
+  image: Joi.string().uri().required(),
+  stockTotal: Joi.number().min(1).required(),
+  categoryId: Joi.any().required(),
+  pricePerDay: Joi.number().min(1).required(),
+});

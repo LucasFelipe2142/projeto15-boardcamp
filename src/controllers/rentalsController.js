@@ -11,7 +11,8 @@ const connection = new Pool({
 export async function postRental(req, res) {
   const date = new Date();
   const day = date.getDay() < 10 ? `0${date.getDay()}` : date.getDay();
-  const month = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth();
+  const month =
+    date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
 
   const { customerId, gameId, daysRented } = req.body;
 
@@ -138,7 +139,7 @@ export async function postCompleteRental(req, res) {
   console.log(atraso);
 
   const updateDate = await connection.query(
-    `UPDATE rentals SET "returnDate"= $1 WHERE id = $2;;`,
+    `UPDATE rentals SET "returnDate"= $1 WHERE id = $2;`,
     [now, req.params.id]
   );
   const updateDate2 = await connection.query(

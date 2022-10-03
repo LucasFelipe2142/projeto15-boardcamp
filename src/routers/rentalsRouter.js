@@ -1,5 +1,5 @@
 import express from "express";
-import { validatePostClient } from "../midweres/validations.js";
+import { validatePostRental } from "../midweres/validations.js";
 import {
   postRental,
   getRentals,
@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.post("/rentals", postRental);
+router.post("/rentals", validatePostRental, postRental);
 router.get("/rentals", getRentals);
 router.post("/rentals/:id/return", postCompleteRental);
 router.delete("/rentals/:id", deleteRentals);

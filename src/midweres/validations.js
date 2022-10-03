@@ -54,3 +54,21 @@ const schemaPostClient = Joi.object().keys({
   cpf: Joi.string().min(11).max(11).required(),
   birthday: Joi.date().required(),
 });
+
+export async function validatePostRental(req, res, next) {
+  const validation = schemaPostRental.validate(req.body, {
+    abortEarly: true,
+  });
+
+  if (validation.error) {
+    return res.send(validation.error);
+  }
+
+  next();
+}
+
+const schemaPostRental = Joi.object().keys({
+  customerId: Joi.number().any().required(),
+  gameId: Joi.number().any().required(),
+  daysRented: Joi.number().min(1).required(),
+});

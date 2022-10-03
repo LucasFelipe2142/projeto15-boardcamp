@@ -68,7 +68,7 @@ export async function validatePostRental(req, res, next) {
 }
 
 const schemaPostRental = Joi.object().keys({
-  customerId: Joi.number().any().required(),
-  gameId: Joi.number().any().required(),
+  customerId: Joi.number().required(),
+  gameId: Joi.number().required(),
   daysRented: Joi.number().min(1).required(),
 });

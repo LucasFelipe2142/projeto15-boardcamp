@@ -1,12 +1,4 @@
-import dotenv from "dotenv";
-import pg from "pg";
-
-const { Pool } = pg;
-dotenv.config();
-
-const connection = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import connection from "../server/server.js";
 
 export async function postgames(req, res) {
   const { name, image, stockTotal, categoryId, pricePerDay } = req.body;

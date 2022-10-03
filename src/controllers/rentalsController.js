@@ -103,3 +103,63 @@ export async function getRentals(req, res) {
     res.send(Clients.rows);
   }
 }
+
+export async function postCompleteRental(req, res) {
+  const now = new Date();
+  console.log("aoba");
+
+  const verifyRentals = await connection.query(
+    `SELECT * FROM rentals WHERE id = $1;`,
+    [req.params.id]
+  );
+
+  if (verifyRentals.rows.length === 0) return res.sendStatus(409);
+
+  if (verifyRentals.rows[0].returnDate !== null) return res.sendStatus(404);
+
+  const verifyGame = await connection.query(
+    `SELECT * FROM games WHERE id = $1;`,
+    [verifyRentals.rows[0].gameId]
+  );
+
+  if (verifyGame.rows.length === 0) return res.sendStatus(409);
+
+  let dia_certo = new Date(verifyRentals.rows[0].rentDate);
+  dia_certo = dia_certo.getTime();
+  console.log(dia_certo);
+
+  const dia_entregou = now.getTime();
+
+  const mili_dia = 1.15741e-8;
+
+  let atraso = (dia_entregou - dia_certo) * mili_dia;
+  atraso = parseInt(atraso);
+  atraso = atraso * verifyGame.rows[0].pricePerDay;
+  console.log(atraso);
+
+  const updateDate = await connection.query(
+    `UPDATE rentals SET "returnDate"= $1 WHERE id = $2;;`,
+    [now, req.params.id]
+  );
+  const updateDate2 = await connection.query(
+    `UPDATE rentals SET "delayFee"= $1 WHERE id = $2;;`,
+    [atraso, req.params.id]
+  );
+  res.sendStatus(201);
+}
+
+export async function deleteRentals(req, res) {
+  const verifyRentals = await connection.query(
+    `SELECT * FROM rentals WHERE id = $1;`,
+    [req.params.id]
+  );
+
+  if (verifyRentals.rows.length === 0) return res.sendStatus(404);
+  if (verifyRentals.rows[0].returnDate === null) return res.sendStatus(400);
+
+  const deleteRentals = await connection.query(
+    `DELETE FROM rentals WHERE id = $1;`,
+    [req.params.id]
+  );
+  res.sendStatus(201);
+}

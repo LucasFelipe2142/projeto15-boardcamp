@@ -35,3 +35,22 @@ const schemaPostGame = Joi.object().keys({
   categoryId: Joi.any().required(),
   pricePerDay: Joi.number().min(1).required(),
 });
+
+export async function validatePostClient(req, res, next) {
+  const validation = schemaPostClient.validate(req.body, {
+    abortEarly: true,
+  });
+
+  if (validation.error) {
+    return res.send(validation.error);
+  }
+
+  next();
+}
+
+const schemaPostClient = Joi.object().keys({
+  name: Joi.string().min(1).required(),
+  phone: Joi.string().min(10).max(11).required(),
+  cpf: Joi.string().min(11).max(11).required(),
+  birthday: Joi.date().required(),
+});
